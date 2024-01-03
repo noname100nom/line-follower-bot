@@ -40,7 +40,7 @@ void loop()
 void loopRate(int freq)
 {
     float invFreq = 1.0 / freq * 1000000.0;
-    unsigned long checker = micros();
+    uint32_t checker = micros();
 
     // Sit in loop until appropriate time has passed
     while (invFreq > (checker - current_time))
