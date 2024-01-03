@@ -21,7 +21,7 @@ void Motor::init(uint8_t en, uint8_t fwd, uint8_t bwd)
     pinMode(bwd, OUTPUT);
 }
 
-void Motor::setSpeed(uint16_t speed)
+void Motor::setSpeed(int16_t speed)
 {
     // Ensure the speed is within the valid range (-255 to 255)
     speed = constrain(speed, -255, 255);

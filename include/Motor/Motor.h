@@ -27,7 +27,7 @@ public:
      *
      * @param speed Motor speed (-255 to 255).
      */
-    void setSpeed(uint16_t speed);
+    void setSpeed(int16_t speed);
 
     /**
      * @brief Function to stop the motor.
