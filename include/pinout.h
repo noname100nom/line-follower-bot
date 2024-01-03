@@ -10,28 +10,15 @@ const uint8_t fwdR = 6; // if HIGH motor is going forward
 const uint8_t bwdR = 8; // if HIGH motor is going backward
 
 // QTR-8RC
-const uint8_t pinLine[8] = {14, 15, 16, 17, 18, 19, 20, 21}; // Analog pins// 0: left ; 7: right
-const uint8_t enLine = 22; // enable the output of all the leds
+const uint8_t pinsQTR[8] = {14, 15, 16, 17, 18, 19, 20, 21}; // Analog pins// 0: left ; 7: right
+const uint8_t enQTR = 22; // enable the output of all the leds
 
 void setInOut()
 {
     // L298N
-    motorL.setPins(enL, fwdL, bwdL);
-    motorL.setPins(enR, fwdR, bwdR);
+    motorL.init(enL, fwdL, bwdL);
+    motorL.init(enR, fwdR, bwdR);
 
     // QTR-8RC
-    pinMode(pinLine[0], INPUT);
-    pinMode(pinLine[1], INPUT);
-    pinMode(pinLine[2], INPUT);
-    pinMode(pinLine[3], INPUT);
-    pinMode(pinLine[4], INPUT);
-    pinMode(pinLine[5], INPUT);
-    pinMode(pinLine[6], INPUT);
-    pinMode(pinLine[7], INPUT);
-
-    pinMode(enLine, OUTPUT);
-    digitalWrite(enLine, HIGH); // Enable the line leds
-
-    // Touch button
-    pinMode(0, INPUT);
+    qtr.init(enQTR, pinsQTR[0], pinsQTR[1], pinsQTR[2], pinsQTR[3], pinsQTR[4], pinsQTR[5], pinsQTR[6], pinsQTR[7]);
 }
