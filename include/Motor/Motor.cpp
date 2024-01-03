@@ -8,7 +8,7 @@ Motor::Motor()
     // Default constructor
 }
 
-void Motor::setPins(uint8_t en, uint8_t fwd, uint8_t bwd)
+void Motor::init(uint8_t en, uint8_t fwd, uint8_t bwd)
 {
     // Set the pins for the motor
     this->en = en;
