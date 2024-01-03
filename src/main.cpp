@@ -15,7 +15,10 @@ int8_t motorRSpeed; // -255 to 255 ; 0 is STOP
 float dt;
 uint32_t current_time, prev_time, elapsed_time = 0;
 uint32_t print_counter, serial_counter;
+uint32_t blink_counter, blink_delay;
+bool blinkAlternate;
 
+void loopBlink();
 void loopRate(int freq);
 void printLoopRate();
 
@@ -34,7 +37,33 @@ void setup()
 
 void loop()
 {
+    prev_time = current_time;
+    current_time = micros();
+    dt = (current_time - prev_time) / 1000000.0;
+
+    loopBlink(); // Indicate we are in main loop with short blink every 1.5 seconds
+
     loopRate(2000); // Set the loop speed at 2000Hz
+}
+
+void loopBlink()
+{
+    if (current_time - blink_counter > blink_delay)
+    {
+        blink_counter = micros();
+        digitalWrite(LED_BUILTIN, blinkAlternate);
+
+        if (blinkAlternate == 1)
+        {
+            blinkAlternate = 0;
+            blink_delay = 100000;
+        }
+        else if (blinkAlternate == 0)
+        {
+            blinkAlternate = 1;
+            blink_delay = 2000000;
+        }
+    }
 }
 
 void loopRate(int freq)

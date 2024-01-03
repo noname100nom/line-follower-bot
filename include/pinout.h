@@ -15,6 +15,9 @@ const uint8_t enQTR = 22; // enable the output of all the leds
 
 void setInOut()
 {
+    // Led builtin
+    pinMode(LED_BUILTIN, OUTPUT);
+
     // L298N
     motorL.init(enL, fwdL, bwdL);
     motorL.init(enR, fwdR, bwdR);
