@@ -20,7 +20,7 @@ public:
      * @param fwd Pin number for the first input.
      * @param bwd Pin number for the second input.
      */
-    void setPins(uint16_t en, uint16_t fwd, uint16_t bwd);
+    void setPins(uint8_t en, uint8_t fwd, uint8_t bwd);
 
     /**
      * @brief Function to set the motor speed.
@@ -35,9 +35,9 @@ public:
     void stop();
 
 private:
-    int en;  ///< Motor enable pin.
-    int fwd; ///< Motor forward pin.
-    int bwd; ///< Motor backward pin.
+    uint8_t en;  ///< Motor enable pin.
+    uint8_t fwd; ///< Motor forward pin.
+    uint8_t bwd; ///< Motor backward pin.
 };
 
 #endif
