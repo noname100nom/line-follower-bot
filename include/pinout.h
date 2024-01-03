@@ -16,13 +16,8 @@ const uint8_t enLine = 22; // enable the output of all the leds
 void setInOut()
 {
     // L298N
-    pinMode(enL, OUTPUT);
-    pinMode(fwdL, OUTPUT);
-    pinMode(bwdL, OUTPUT);
-
-    pinMode(enR, OUTPUT);
-    pinMode(fwdR, OUTPUT);
-    pinMode(bwdR, OUTPUT);
+    motorL.setPins(enL, fwdL, bwdL);
+    motorL.setPins(enR, fwdR, bwdR);
 
     // QTR-8RC
     pinMode(pinLine[0], INPUT);
