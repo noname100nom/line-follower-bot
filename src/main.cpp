@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "pinout.h"
-#include "Motor.h"
+#include "Motor/Motor.h"
 
 Motor motorL;
 Motor motorR;
