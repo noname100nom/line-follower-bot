@@ -47,7 +47,7 @@ bool blinkAlternate;
 
 /* Functions signatures definitons */
 void acquireLine();
-void calculateError(int16_t sensorValues[]);
+void calculateError();
 void calculatePID();
 void commandMotors();
 
@@ -79,7 +79,7 @@ void loop()
     dt = (currentTime - previousTime) / 1000000.0;
 
     /* ----- Main part of the loop ----- */
-    calculateError(lineValues); // Calculate error (difference between actual position and setpoint)
+    calculateError(); // Calculate error (difference between actual position and setpoint)
 
     calculatePID(); // Calculate the new movement of the robot based on the error
 
@@ -100,13 +100,13 @@ void acquireLine()
     lineValues[3] = qtr.getValue(5);
 }
 
-void calculateError(int16_t sensorValues[])
+void calculateError()
 {
     int16_t position = 0;
     for (int i = 0; i < 4; i++)
     {
         // Weighted sum of sensor values to calculate the position
-        position += (i - 1.5) * sensorValues[i];
+        position += (i - 1.5) * lineValues[i];
     }
     error = position / 100; // Scaling factor for better PID performance
 }
