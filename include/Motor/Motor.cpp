@@ -1,7 +1,7 @@
 // Motor.cpp
 
+#include <Arduino.h>
 #include "Motor.h"
-#include "Arduino.h"
 
 Motor::Motor()
 {

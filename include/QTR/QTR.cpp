@@ -1,7 +1,7 @@
 // Motor.cpp
 
+#include <Arduino.h>
 #include "QTR.h"
-#include "Arduino.h"
 
 QTR::QTR()
 {
