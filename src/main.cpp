@@ -2,6 +2,11 @@
 #include "pinout.h"
 #include "Motor/Motor.h"
 #include "QTR/QTR.h"
+#include "Figures/Figures.h"
+
+/* Figures */
+const uint8_t figuresCount = 0;
+const uint8_t figures[figuresCount] = {};
 
 /* Motor settings */
 // Setup the motors
@@ -10,6 +15,9 @@ Motor motorR;
 // Motor speed limits
 const int16_t motorMinSpeed = -255;
 const int16_t motorMaxSpeed = 255;
+// Motor
+int16_t motorSpeedLeft;
+int16_t motorSpeedRight;
 
 /* Line sensor settings */
 // Setup the line sensor
@@ -25,21 +33,23 @@ const double Kd = 0.5; // Derivative gain
 // Setpoint - Desired position of the robot on the line
 const int16_t setpoint = 0;
 // Variables for PID
+double error = 0;
 double lastError = 0;
 double integral = 0;
 
 /* Loop rate settings */
 // Loop rate variables
 float dt;
-uint32_t current_time, prev_time, elapsed_time = 0;
-uint32_t print_counter, serial_counter;
-uint32_t blink_counter, blink_delay;
+uint32_t currentTime, previousTime, elapsedTime = 0;
+uint32_t printCounter, serialCounter;
+uint32_t blinkCounter, blinkDelay;
 bool blinkAlternate;
 
 /* Functions signatures definitons */
 void acquireLine();
+void calculateError(int16_t sensorValues[]);
 void calculatePID();
-void commandMotors(uint16_t motorL, uint16_t motorR);
+void commandMotors();
 
 void loopBlink();
 void loopRate(int freq);
@@ -64,12 +74,20 @@ void setup()
 
 void loop()
 {
-    prev_time = current_time;
-    current_time = micros();
-    dt = (current_time - prev_time) / 1000000.0;
+    previousTime = currentTime;
+    currentTime = micros();
+    dt = (currentTime - previousTime) / 1000000.0;
 
-    loopBlink(); // Indicate we are in main loop with short blink every 1.5 seconds
+    /* ----- Main part of the loop ----- */
+    calculateError(lineValues); // Calculate error (difference between actual position and setpoint)
 
+    calculatePID(); // Calculate the new movement of the robot based on the error
+
+    commandMotors(); // Send the values calculated by the PID to the motors
+
+    /* --------------------------------- */
+
+    loopBlink();    // Indicate we are in main loop with short blink every 1.5 seconds
     loopRate(2000); // Set the loop speed at 2000Hz
 }
 
@@ -82,7 +100,7 @@ void acquireLine()
     lineValues[3] = qtr.getValue(5);
 }
 
-int16_t calculateError(int16_t sensorValues[])
+void calculateError(int16_t sensorValues[])
 {
     int16_t position = 0;
     for (int i = 0; i < 4; i++)
@@ -90,52 +108,46 @@ int16_t calculateError(int16_t sensorValues[])
         // Weighted sum of sensor values to calculate the position
         position += (i - 1.5) * sensorValues[i];
     }
-    return position / 100; // Scaling factor for better PID performance
+    error = position / 100; // Scaling factor for better PID performance
 }
 
 void calculatePID()
 {
-    // Calculate error (difference between actual position and setpoint)
-    int16_t error = calculateError(lineValues);
-
     // Calculate PID components
     double proportional = Kp * error;
     integral += Ki * error;
     double derivative = Kd * (error - lastError);
 
     // Calculate motor speeds
-    int16_t motorSpeedLeft = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
-    int16_t motorSpeedRight = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
-
-    // Update motor speeds
-    commandMotors(motorSpeedLeft, motorSpeedRight);
+    motorSpeedLeft = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
+    motorSpeedRight = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
 
     // Save the current error for the next iteration
     lastError = error;
 }
 
-void commandMotors(uint16_t speedL, uint16_t speedR)
+void commandMotors()
 {
-    motorL.setSpeed(speedL);
-    motorR.setSpeed(speedR);
+    motorL.setSpeed(motorSpeedLeft);
+    motorR.setSpeed(motorSpeedRight);
 }
 
 void loopBlink()
 {
-    if (current_time - blink_counter > blink_delay)
+    if (currentTime - blinkCounter > blinkDelay)
     {
-        blink_counter = micros();
+        blinkCounter = micros();
         digitalWrite(LED_BUILTIN, blinkAlternate);
 
         if (blinkAlternate == 1)
         {
             blinkAlternate = 0;
-            blink_delay = 100000;
+            blinkDelay = 100000;
         }
         else if (blinkAlternate == 0)
         {
             blinkAlternate = 1;
-            blink_delay = 2000000;
+            blinkDelay = 2000000;
         }
     }
 }
@@ -146,7 +158,7 @@ void loopRate(int freq)
     uint32_t checker = micros();
 
     // Sit in loop until appropriate time has passed
-    while (invFreq > (checker - current_time))
+    while (invFreq > (checker - currentTime))
     {
         checker = micros();
     }
@@ -154,9 +166,9 @@ void loopRate(int freq)
 
 void printLoopRate()
 {
-    if (current_time - print_counter > 10000)
+    if (currentTime - printCounter > 10000)
     {
-        print_counter = micros();
+        printCounter = micros();
         Serial.print(F("dt = "));
         Serial.println(dt * 1000000.0);
     }
