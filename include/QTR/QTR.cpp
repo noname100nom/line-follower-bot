@@ -53,7 +53,7 @@ void QTR::calibrate(uint16_t time)
     uint32_t c = 0;
     while (c < time)
     {
-        for (int i = 0; i < 8; i++)
+        for (uint8_t i = 0; i < 8; i++)
         {
             currVal = analogRead(sensorPin[i]);
 
