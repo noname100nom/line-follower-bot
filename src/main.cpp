@@ -51,6 +51,8 @@ void calculateError();
 void calculatePID();
 void commandMotors();
 
+void followLine();
+
 void loopBlink();
 void loopRate(int freq);
 void printLoopRate();
@@ -79,12 +81,7 @@ void loop()
     dt = (currentTime - previousTime) / 1000000.0;
 
     /* ----- Main part of the loop ----- */
-    calculateError(); // Calculate error (difference between actual position and setpoint)
-
-    calculatePID(); // Calculate the new movement of the robot based on the error
-
-    commandMotors(); // Send the values calculated by the PID to the motors
-
+    followLine();
     /* --------------------------------- */
 
     loopBlink();    // Indicate we are in main loop with short blink every 1.5 seconds
@@ -130,6 +127,15 @@ void commandMotors()
 {
     motorL.setSpeed(motorSpeedLeft);
     motorR.setSpeed(motorSpeedRight);
+}
+
+void followLine()
+{
+    calculateError(); // Calculate error (difference between actual position and setpoint)
+
+    calculatePID(); // Calculate the new movement of the robot based on the error
+
+    commandMotors(); // Send the values calculated by the PID to the motors
 }
 
 void loopBlink()
