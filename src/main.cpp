@@ -81,7 +81,8 @@ void loop()
     dt = (currentTime - previousTime) / 1000000.0;
 
     /* ----- Main part of the loop ----- */
-    followLine();
+    // followLine();
+    qtr.printAnalogArray();
     /* --------------------------------- */
 
     loopBlink();    // Indicate we are in main loop with short blink every 1.5 seconds
