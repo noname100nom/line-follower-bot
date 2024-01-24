@@ -1,17 +1,11 @@
 #include <Arduino.h>
 #include "pinout.h"
-#include "Motor/Motor.h"
-#include "QTR/QTR.h"
 #include "Figures/Figures.h"
 
 /* Figures */
 const uint8_t figuresCount = 0;
 const uint8_t figures[figuresCount] = {};
-
 /* Motor settings */
-// Setup the motors
-Motor motorL;
-Motor motorR;
 // Motor speed limits
 const int16_t motorMinSpeed = -255;
 const int16_t motorMaxSpeed = 255;
@@ -20,8 +14,6 @@ int16_t motorSpeedLeft;
 int16_t motorSpeedRight;
 
 /* Line sensor settings */
-// Setup the line sensor
-QTR qtr;
 // Line sensor variables
 int16_t lineValues[4];
 
