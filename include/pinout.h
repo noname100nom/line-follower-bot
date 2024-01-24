@@ -1,4 +1,13 @@
 #include <Arduino.h>
+#include "Motor/Motor.h"
+#include "QTR/QTR.h"
+
+// Setup the motors
+Motor motorL;
+Motor motorR;
+
+// Setup the line sensor
+QTR qtr;
 
 // L298N
 const uint8_t enL = 3; // PWM output to set the motor speed
