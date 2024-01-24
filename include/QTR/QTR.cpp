@@ -35,7 +35,7 @@ void QTR::init(uint8_t en, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8
 
 uint16_t QTR::getValue(uint8_t sensor)
 {
-    if (sensor < 8)
+    if (sensor >= 0 && sensor < 8)
     {
         return analogRead(sensorPin[sensor]);
     }
@@ -103,7 +103,7 @@ void QTR::printInfos()
     if (qtrCurrentTime - qtrPrintCounter > 10000)
     {
         qtrPrintCounter = micros();
-        
+
         Serial.printf("White: %d | Black: %d | Treshold: %d\n", whiteVal, blackVal, treshold);
     }
 }
@@ -114,6 +114,16 @@ void QTR::printArray()
     {
         qtrPrintCounter = micros();
 
-        Serial.printf("| %04d | %04d | %04d | %04d | %04d | %04d | %04d | %04d |\n", sensorPin[0], sensorPin[1], sensorPin[2], sensorPin[3], sensorPin[4], sensorPin[5], sensorPin[6], sensorPin[7]);
+        Serial.printf("| %d | %d | %d | %d | %d | %d | %d | %d |\n", isBlack(0), isBlack(1), isBlack(2), isBlack(3), isBlack(4), isBlack(5), isBlack(6), isBlack(7));
+    }
+}
+
+void QTR::printAnalogArray()
+{
+    if (qtrCurrentTime - qtrPrintCounter > 10000)
+    {
+        qtrPrintCounter = micros();
+
+        Serial.printf("| %04d | %04d | %04d | %04d | %04d | %04d | %04d | %04d |\n", getValue(0), getValue(1), getValue(2), getValue(3), getValue(4), getValue(5), getValue(6), getValue(7));
     }
 }

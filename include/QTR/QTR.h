@@ -63,17 +63,24 @@ public:
 
     /**
      * @brief Function to print the value for the white, black
-     * and the treshold value (need Serial.begin()).
+     * and the treshold value (needs Serial.begin()).
      * 
      */
     void printInfos();
 
     /**
      * @brief Function to print the array of sensors. Prints
-     * 1 if black or 0 if white (need Serial.begin()).
+     * 1 if black or 0 if white (needs Serial.begin()).
      * 
      */
     void printArray();
+
+    /**
+     * @brief Function to print the analog value of the array of
+     * sensors (needs Serial.begin()).
+     * 
+     */
+    void printAnalogArray();
 
 private:
     uint8_t en;
