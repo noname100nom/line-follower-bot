@@ -10,8 +10,8 @@ const uint8_t fwdR = 6; // if HIGH motor is going forward
 const uint8_t bwdR = 8; // if HIGH motor is going backward
 
 // QTR-8RC
-const uint8_t pinsQTR[8] = {14, 15, 16, 17, 18, 19, 20, 21}; // Analog pins// 0: left ; 7: right
-const uint8_t enQTR = 22; // enable the output of all the leds
+const uint8_t pinsQTR[8] = {15, 16, 17, 18, 19, 20, 21, 22}; // Analog pins// 0: left ; 7: right
+const uint8_t enQTR = 14; // enable the output of all the leds
 
 void setInOut()
 {
