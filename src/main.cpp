@@ -1,11 +1,23 @@
 #include <Arduino.h>
-#include "pinout.h"
-#include "Figures/Figures.h"
+#include "Motor.h"
+#include "QTR.h"
 
 /* Figures */
 const uint8_t figuresCount = 0;
 const uint8_t figures[figuresCount] = {};
+
 /* Motor settings */
+// L298N (Motor pins)
+const uint8_t enL = 3; // PWM output to set the motor speed
+const uint8_t fwdL = 5; // if HIGH motor is going forward
+const uint8_t bwdL = 7; // if HIGH motor is going backward
+
+const uint8_t enR = 4; // PWM output to set the motor speed
+const uint8_t fwdR = 6; // if HIGH motor is going forward
+const uint8_t bwdR = 8; // if HIGH motor is going backward
+// Setup the motors
+Motor motorL;
+Motor motorR;
 // Motor speed limits
 const int16_t motorMinSpeed = -255;
 const int16_t motorMaxSpeed = 255;
@@ -14,8 +26,16 @@ int16_t motorSpeedLeft;
 int16_t motorSpeedRight;
 
 /* Line sensor settings */
+// QTR-8RC (Line sensor pins)
+const uint8_t pinsQTR[8] = {15, 16, 17, 18, 19, 20, 21, 22}; // Analog pins// 0: left ; 7: right
+const uint8_t enQTR = 14; // enable the output of all the leds
+// Setup the line sensor
+QTR qtr;
 // Line sensor variables
 int16_t lineValues[4];
+
+// Inlude the figures after all the declarations
+#include "Figures.h"
 
 /* PID settings */
 // PID parameters
@@ -38,6 +58,8 @@ uint32_t blinkCounter, blinkDelay;
 bool blinkAlternate;
 
 /* Functions signatures definitons */
+void setInOut();
+
 void acquireLine();
 void calculateError();
 void calculatePID();
@@ -79,6 +101,19 @@ void loop()
 
     loopBlink();    // Indicate we are in main loop with short blink every 1.5 seconds
     loopRate(2000); // Set the loop speed at 2000Hz
+}
+
+void setInOut()
+{
+    // Led builtin
+    pinMode(LED_BUILTIN, OUTPUT);
+
+    // L298N
+    motorL.init(enL, fwdL, bwdL);
+    motorL.init(enR, fwdR, bwdR);
+
+    // QTR-8RC
+    qtr.init(enQTR, pinsQTR[0], pinsQTR[1], pinsQTR[2], pinsQTR[3], pinsQTR[4], pinsQTR[5], pinsQTR[6], pinsQTR[7]);
 }
 
 void acquireLine()
