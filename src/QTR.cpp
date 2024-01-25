@@ -12,14 +12,14 @@ void QTR::init(uint8_t en, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8
 {
     // Set the pins for the qtr sensor
     this->en = en;
-    this->sensorPin[0] = d1;
-    this->sensorPin[1] = d2;
-    this->sensorPin[2] = d3;
-    this->sensorPin[3] = d4;
-    this->sensorPin[4] = d5;
-    this->sensorPin[5] = d6;
-    this->sensorPin[6] = d7;
-    this->sensorPin[7] = d8;
+    this->sensorPin[0] = d8;
+    this->sensorPin[1] = d7;
+    this->sensorPin[2] = d6;
+    this->sensorPin[3] = d5;
+    this->sensorPin[4] = d4;
+    this->sensorPin[5] = d3;
+    this->sensorPin[6] = d2;
+    this->sensorPin[7] = d1;
 
     // Configure pins as INPUT and OUTPUTS
     pinMode(en, OUTPUT);
