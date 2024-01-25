@@ -8,11 +8,11 @@ const uint8_t figures[figuresCount] = {};
 
 /* Motor settings */
 // L298N (Motor pins)
-const uint8_t enL = 3; // PWM output to set the motor speed
+const uint8_t enL = 3;  // PWM output to set the motor speed
 const uint8_t fwdL = 5; // if HIGH motor is going forward
 const uint8_t bwdL = 7; // if HIGH motor is going backward
 
-const uint8_t enR = 4; // PWM output to set the motor speed
+const uint8_t enR = 4;  // PWM output to set the motor speed
 const uint8_t fwdR = 6; // if HIGH motor is going forward
 const uint8_t bwdR = 8; // if HIGH motor is going backward
 // Setup the motors
@@ -21,6 +21,7 @@ Motor motorR;
 // Motor speed limits
 const int16_t motorMinSpeed = -255;
 const int16_t motorMaxSpeed = 255;
+const uint8_t baseSpeed = 100;
 // Motor
 int16_t motorSpeedLeft;
 int16_t motorSpeedRight;
@@ -28,7 +29,7 @@ int16_t motorSpeedRight;
 /* Line sensor settings */
 // QTR-8RC (Line sensor pins)
 const uint8_t pinsQTR[8] = {15, 16, 17, 18, 19, 20, 21, 22}; // Analog pins// 0: left ; 7: right
-const uint8_t enQTR = 14; // enable the output of all the leds
+const uint8_t enQTR = 14;                                    // enable the output of all the leds
 // Setup the line sensor
 QTR qtr;
 // Line sensor variables
@@ -39,15 +40,19 @@ int16_t lineValues[4];
 
 /* PID settings */
 // PID parameters
-const double Kp = 2.0; // Proportional gain
-const double Ki = 0.1; // Integral gain
-const double Kd = 0.5; // Derivative gain
+const double Kp = 25; // Proportional gain
+const double Ki = 5; // Integral gain
+const double Kd = 10; // Derivative gain
 // Setpoint - Desired position of the robot on the line
-const int16_t setpoint = 0;
+const uint8_t setpoint = 0;
 // Variables for PID
-double error = 0;
-double lastError = 0;
-double integral = 0;
+double pid;
+double error;
+double errorPrev;
+double proportional;
+double integral;
+double integralPrev;
+double derivative;
 
 /* Loop rate settings */
 // Loop rate variables
@@ -84,8 +89,8 @@ void setup()
     qtr.calibrate(2000); // Calibrate the QTR sensor for ~2sec
 
     // Set the initial speed of the robot
-    motorL.setSpeed(100);
-    motorR.setSpeed(100);
+    motorL.setSpeed(baseSpeed);
+    motorR.setSpeed(baseSpeed);
 }
 
 void loop()
@@ -95,11 +100,10 @@ void loop()
     dt = (currentTime - previousTime) / 1000000.0;
 
     /* ----- Main part of the loop ----- */
-    // followLine();
-    qtr.printAnalogArray();
+    followLine();
     /* --------------------------------- */
 
-    loopBlink();    // Indicate we are in main loop with short blink every 1.5 seconds
+    loopBlink(); // Indicate we are in main loop with short blink every 1.5 seconds
     loopRate(2000); // Set the loop speed at 2000Hz
 }
 
@@ -110,7 +114,7 @@ void setInOut()
 
     // L298N
     motorL.init(enL, fwdL, bwdL);
-    motorL.init(enR, fwdR, bwdR);
+    motorR.init(enR, fwdR, bwdR);
 
     // QTR-8RC
     qtr.init(enQTR, pinsQTR[0], pinsQTR[1], pinsQTR[2], pinsQTR[3], pinsQTR[4], pinsQTR[5], pinsQTR[6], pinsQTR[7]);
@@ -127,6 +131,8 @@ void acquireLine()
 
 void calculateError()
 {
+    acquireLine();
+
     int16_t position = 0;
     for (int i = 0; i < 4; i++)
     {
@@ -139,16 +145,19 @@ void calculateError()
 void calculatePID()
 {
     // Calculate PID components
-    double proportional = Kp * error;
-    integral += Ki * error;
-    double derivative = Kd * (error - lastError);
+    proportional = error;
+    integral = integralPrev + error * dt;
+    derivative = (error - errorPrev) / dt;
+
+    pid = Kp * proportional + Ki * integral + Kd * derivative;
 
     // Calculate motor speeds
-    motorSpeedLeft = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
-    motorSpeedRight = constrain(proportional + integral + derivative, motorMinSpeed, motorMaxSpeed);
+    motorSpeedLeft = constrain(baseSpeed + pid, motorMinSpeed, motorMaxSpeed);
+    motorSpeedRight = constrain(baseSpeed - pid, motorMinSpeed, motorMaxSpeed);
 
-    // Save the current error for the next iteration
-    lastError = error;
+    // Save the current error and integral for the next iteration
+    errorPrev = error;
+    integralPrev = integral;
 }
 
 void commandMotors()
