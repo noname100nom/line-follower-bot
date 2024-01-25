@@ -212,7 +212,21 @@ void printLoopRate()
     if (currentTime - printCounter > 10000)
     {
         printCounter = micros();
+        
         Serial.print(F("dt = "));
         Serial.println(dt * 1000000.0);
+    }
+}
+
+void printMotorSpeed()
+{
+    if (currentTime - printCounter > 10000)
+    {
+        printCounter = micros();
+        
+        Serial.print(F("Motor L: "));
+        Serial.print(motorSpeedLeft);
+        Serial.print(F("Motor R: "));
+        Serial.print(motorSpeedRight);
     }
 }
