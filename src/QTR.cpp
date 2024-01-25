@@ -100,6 +100,7 @@ bool QTR::isWhite(uint8_t sensor)
 
 void QTR::printInfos()
 {
+    qtrCurrentTime = micros();
     if (qtrCurrentTime - qtrPrintCounter > 10000)
     {
         qtrPrintCounter = micros();
@@ -110,6 +111,7 @@ void QTR::printInfos()
 
 void QTR::printArray()
 {
+    qtrCurrentTime = micros();
     if (qtrCurrentTime - qtrPrintCounter > 10000)
     {
         qtrPrintCounter = micros();
@@ -120,6 +122,7 @@ void QTR::printArray()
 
 void QTR::printAnalogArray()
 {
+    qtrCurrentTime = micros();
     if (qtrCurrentTime - qtrPrintCounter > 10000)
     {
         qtrPrintCounter = micros();
