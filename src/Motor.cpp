@@ -33,8 +33,8 @@ void Motor::setSpeed(int16_t speed)
     else if (speed > 0) // Forward
     {
         // Set the motor in forward mode
-        digitalWrite(fwd, 1);
-        digitalWrite(bwd, 0);
+        digitalWrite(fwd, HIGH);
+        digitalWrite(bwd, LOW);
 
         // Set the motor speed using analogWrite
         analogWrite(en, speed);
@@ -42,8 +42,8 @@ void Motor::setSpeed(int16_t speed)
     else if (speed < 0) // Backward
     {
         // Set the motor in backward mode
-        digitalWrite(fwd, 0);
-        digitalWrite(bwd, 1);
+        digitalWrite(fwd, LOW);
+        digitalWrite(bwd, HIGH);
 
         // Set the inverted motor speed using analogWrite
         analogWrite(en, speed * -1);
@@ -52,8 +52,8 @@ void Motor::setSpeed(int16_t speed)
 
 void Motor::stop()
 {
-    digitalWrite(fwd, 0);
-    digitalWrite(bwd, 0);
+    digitalWrite(fwd, LOW);
+    digitalWrite(bwd, LOW);
 
-    analogWrite(en, 0);
+    analogWrite(en, LOW);
 }
