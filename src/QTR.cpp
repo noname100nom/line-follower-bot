@@ -31,6 +31,8 @@ void QTR::init(uint8_t en, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4, uint8
     pinMode(sensorPin[5], INPUT);
     pinMode(sensorPin[6], INPUT);
     pinMode(sensorPin[7], INPUT);
+
+    digitalWrite(en, HIGH);
 }
 
 uint16_t QTR::getValue(uint8_t sensor)
